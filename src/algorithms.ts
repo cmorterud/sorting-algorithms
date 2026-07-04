@@ -3,6 +3,20 @@ import type { AlgorithmDefinition, SortEvent } from "./types";
 const allIndices = (length: number): number[] =>
   Array.from({ length }, (_, index) => index);
 
+const writeValue = (
+  values: number[],
+  events: SortEvent[],
+  index: number,
+  value: number,
+): void => {
+  if (values[index] === value) {
+    return;
+  }
+
+  values[index] = value;
+  events.push({ type: "overwrite", index, value });
+};
+
 export const bubbleSort = (input: number[]): SortEvent[] => {
   const values = [...input];
   const events: SortEvent[] = [];
@@ -78,13 +92,11 @@ export const insertionSort = (input: number[]): SortEvent[] => {
         break;
       }
 
-      values[j + 1] = values[j];
-      events.push({ type: "overwrite", index: j + 1, value: values[j] });
+      writeValue(values, events, j + 1, values[j]);
       j -= 1;
     }
 
-    values[j + 1] = current;
-    events.push({ type: "overwrite", index: j + 1, value: current });
+    writeValue(values, events, j + 1, current);
     events.push({ type: "markSorted", indices: allIndices(i + 1) });
   }
 
@@ -110,20 +122,10 @@ export const mergeSort = (input: number[]): SortEvent[] => {
       });
 
       if (leftValues[leftIndex] <= rightValues[rightIndex]) {
-        values[writeIndex] = leftValues[leftIndex];
-        events.push({
-          type: "overwrite",
-          index: writeIndex,
-          value: leftValues[leftIndex],
-        });
+        writeValue(values, events, writeIndex, leftValues[leftIndex]);
         leftIndex += 1;
       } else {
-        values[writeIndex] = rightValues[rightIndex];
-        events.push({
-          type: "overwrite",
-          index: writeIndex,
-          value: rightValues[rightIndex],
-        });
+        writeValue(values, events, writeIndex, rightValues[rightIndex]);
         rightIndex += 1;
       }
 
@@ -131,23 +133,13 @@ export const mergeSort = (input: number[]): SortEvent[] => {
     }
 
     while (leftIndex < leftValues.length) {
-      values[writeIndex] = leftValues[leftIndex];
-      events.push({
-        type: "overwrite",
-        index: writeIndex,
-        value: leftValues[leftIndex],
-      });
+      writeValue(values, events, writeIndex, leftValues[leftIndex]);
       leftIndex += 1;
       writeIndex += 1;
     }
 
     while (rightIndex < rightValues.length) {
-      values[writeIndex] = rightValues[rightIndex];
-      events.push({
-        type: "overwrite",
-        index: writeIndex,
-        value: rightValues[rightIndex],
-      });
+      writeValue(values, events, writeIndex, rightValues[rightIndex]);
       rightIndex += 1;
       writeIndex += 1;
     }

@@ -128,10 +128,11 @@ h1 {
 
 .controls {
   display: grid;
-  grid-template-columns: repeat(4, minmax(96px, auto)) minmax(180px, 1fr) minmax(
-      180px,
-      1fr
-    ) minmax(180px, 1fr);
+  grid-template-columns:
+    repeat(4, minmax(96px, auto))
+    repeat(3, minmax(150px, 1fr))
+    minmax(96px, auto)
+    minmax(150px, 1fr);
   gap: 12px;
   align-items: end;
 }

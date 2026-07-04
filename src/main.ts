@@ -2,6 +2,7 @@ import "./styles.css";
 import { algorithms } from "./algorithms";
 import type { SortEvent, VisualizerState } from "./types";
 import { render } from "./renderer";
+import { SortSound } from "./sound";
 
 const MIN_VALUE = 5;
 const MAX_VALUE = 100;
@@ -45,6 +46,13 @@ app.innerHTML = `
       <label>
         Speed
         <input id="speed-slider" type="range" min="1" max="100" value="45" />
+      </label>
+
+      <button id="sound-button" type="button" aria-pressed="true">Sound On</button>
+
+      <label>
+        Volume
+        <input id="volume-slider" type="range" min="0" max="100" value="45" />
       </label>
     </section>
 
@@ -91,6 +99,8 @@ const elements = {
   algorithmSelect: getElement<HTMLSelectElement>("#algorithm-select"),
   sizeSlider: getElement<HTMLInputElement>("#size-slider"),
   speedSlider: getElement<HTMLInputElement>("#speed-slider"),
+  soundButton: getElement<HTMLButtonElement>("#sound-button"),
+  volumeSlider: getElement<HTMLInputElement>("#volume-slider"),
 };
 
 algorithms.forEach((algorithm) => {
@@ -122,6 +132,8 @@ const createState = (values: number[]): VisualizerState => ({
 
 let state = createState(createRandomArray(DEFAULT_SIZE));
 let playbackTimer: number | undefined;
+const sound = new SortSound();
+sound.setVolume(Number(elements.volumeSlider.value) / 100);
 
 const selectedAlgorithm = () => {
   const algorithm = algorithms.find(
@@ -150,6 +162,7 @@ const speedToDelay = (): number => {
 const applyEvent = (event: SortEvent): void => {
   state.highlightedCompareIndices.clear();
   state.highlightedSwapIndices.clear();
+  sound.playEvent(event, state.values);
 
   switch (event.type) {
     case "compare":
@@ -222,7 +235,8 @@ const randomize = (): void => {
   renderCurrentState();
 };
 
-elements.startButton.addEventListener("click", () => {
+elements.startButton.addEventListener("click", async () => {
+  await sound.unlock();
   const algorithm = selectedAlgorithm();
   state.events = algorithm.sort([...state.values]);
   state.originalValues = [...state.values];
@@ -258,6 +272,21 @@ elements.algorithmSelect.addEventListener("change", renderCurrentState);
 
 elements.sizeSlider.addEventListener("input", () => {
   randomize();
+});
+
+elements.soundButton.addEventListener("click", async () => {
+  const nextEnabled = !sound.isEnabled();
+  sound.setEnabled(nextEnabled);
+  elements.soundButton.textContent = nextEnabled ? "Sound On" : "Sound Off";
+  elements.soundButton.setAttribute("aria-pressed", String(nextEnabled));
+
+  if (nextEnabled) {
+    await sound.unlock();
+  }
+});
+
+elements.volumeSlider.addEventListener("input", () => {
+  sound.setVolume(Number(elements.volumeSlider.value) / 100);
 });
 
 renderCurrentState();

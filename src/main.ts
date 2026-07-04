@@ -33,24 +33,24 @@ app.innerHTML = `
       <button id="pause-button" type="button">Pause</button>
       <button id="reset-button" type="button">Reset</button>
 
-      <label>
+      <label class="control-field algorithm-field">
         Algorithm
         <select id="algorithm-select"></select>
       </label>
 
-      <label>
+      <label class="control-field compact-field">
         Array size
         <input id="size-slider" type="range" min="10" max="150" value="${DEFAULT_SIZE}" />
       </label>
 
-      <label>
+      <label class="control-field compact-field">
         Speed
         <input id="speed-slider" type="range" min="1" max="100" value="45" />
       </label>
 
       <button id="sound-button" type="button" aria-pressed="true">Sound On</button>
 
-      <label>
+      <label class="control-field compact-field">
         Volume
         <input id="volume-slider" type="range" min="0" max="100" value="45" />
       </label>

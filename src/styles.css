@@ -128,25 +128,31 @@ h1 {
 
 .controls {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 12px;
   align-items: end;
 }
 
 .controls button {
   flex: 0 0 auto;
-  min-width: 104px;
+  min-width: 96px;
   white-space: nowrap;
 }
 
-.controls label {
+.control-field {
   display: grid;
-  flex: 1 1 170px;
   gap: 7px;
-  min-width: 150px;
   color: #4c5865;
   font-size: 0.85rem;
   font-weight: 700;
+}
+
+.algorithm-field {
+  flex: 0 0 150px;
+}
+
+.compact-field {
+  flex: 0 0 112px;
 }
 
 .controls select,
@@ -201,8 +207,13 @@ h1 {
   }
 
   .controls button,
-  .controls label {
+  .control-field {
     min-width: 0;
+  }
+
+  .algorithm-field,
+  .compact-field {
+    flex-basis: auto;
   }
 
   .stats {

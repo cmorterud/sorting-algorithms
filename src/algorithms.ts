@@ -17,6 +17,20 @@ const writeValue = (
   events.push({ type: "overwrite", index, value });
 };
 
+const swapValues = (
+  values: number[],
+  events: SortEvent[],
+  i: number,
+  j: number,
+): void => {
+  if (i === j || values[i] === values[j]) {
+    return;
+  }
+
+  [values[i], values[j]] = [values[j], values[i]];
+  events.push({ type: "swap", i, j });
+};
+
 export const bubbleSort = (input: number[]): SortEvent[] => {
   const values = [...input];
   const events: SortEvent[] = [];
@@ -27,8 +41,7 @@ export const bubbleSort = (input: number[]): SortEvent[] => {
       events.push({ type: "compare", indices: [i, i + 1] });
 
       if (values[i] > values[i + 1]) {
-        [values[i], values[i + 1]] = [values[i + 1], values[i]];
-        events.push({ type: "swap", i, j: i + 1 });
+        swapValues(values, events, i, i + 1);
       }
     }
 
@@ -59,8 +72,7 @@ export const selectionSort = (input: number[]): SortEvent[] => {
     }
 
     if (minIndex !== i) {
-      [values[i], values[minIndex]] = [values[minIndex], values[i]];
-      events.push({ type: "swap", i, j: minIndex });
+      swapValues(values, events, i, minIndex);
     }
 
     events.push({ type: "markSorted", indices: [i] });
@@ -175,8 +187,7 @@ export const quickSort = (input: number[]): SortEvent[] => {
 
       if (values[i] < pivot) {
         if (i !== pivotIndex) {
-          [values[i], values[pivotIndex]] = [values[pivotIndex], values[i]];
-          events.push({ type: "swap", i, j: pivotIndex });
+          swapValues(values, events, i, pivotIndex);
         }
 
         pivotIndex += 1;
@@ -184,8 +195,7 @@ export const quickSort = (input: number[]): SortEvent[] => {
     }
 
     if (pivotIndex !== high) {
-      [values[pivotIndex], values[high]] = [values[high], values[pivotIndex]];
-      events.push({ type: "swap", i: pivotIndex, j: high });
+      swapValues(values, events, pivotIndex, high);
     }
 
     events.push({ type: "markSorted", indices: [pivotIndex] });

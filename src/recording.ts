@@ -1,9 +1,11 @@
 import { algorithms } from "./algorithms";
 import { SortSound } from "./sound";
 import type { AlgorithmDefinition, SortEvent, VisualizerState } from "./types";
+import "./recording/themes/midnight.css";
 
 type RecordingStatus = "idle" | "countdown" | "running" | "paused" | "completed";
 type DataShape = "random" | "nearly-sorted" | "reversed" | "few-unique" | "sorted";
+type RecordingTheme = "midnight";
 
 interface Runner {
   algorithm: AlgorithmDefinition;
@@ -13,6 +15,7 @@ interface Runner {
 
 const MIN_VALUE = 5;
 const MAX_VALUE = 100;
+const recordingTheme: RecordingTheme = "midnight";
 const app = document.querySelector<HTMLDivElement>("#app");
 
 if (!app) throw new Error("App root was not found.");
@@ -25,7 +28,7 @@ app.innerHTML = `
   <main class="recording-page" id="recording-page">
     <div class="recording-workspace">
       <section class="recording-preview" aria-label="Portrait recording preview">
-        <div class="recording-canvas" id="recording-canvas">
+        <div class="recording-canvas recording-theme-dark" id="recording-canvas" data-theme="${recordingTheme}">
           <header class="recording-header">
             <h1 id="recording-title">Sorting Algorithm Race</h1>
             <p id="recording-subtitle">Same input. Same machine.</p>
@@ -113,7 +116,7 @@ const formatTime = (milliseconds: number): string => `${(milliseconds / 1000).to
 const renderBars = (runner: Runner): HTMLElement => {
   const card = document.createElement("article"); card.className = "recording-runner";
   const state = runner.state; const showStats = el.stats.checked;
-  card.innerHTML = `<header><strong>${runner.algorithm.label}</strong><span>${runner.completedAt !== undefined ? "Complete" : status === "paused" ? "Paused" : status === "running" ? "Sorting" : "Ready"}</span></header><div class="recording-bars" role="img" aria-label="${runner.algorithm.label} sorting ${state.values.length} values"></div>${showStats ? `<div class="runner-stats"><span>Comparisons <b>${state.comparisons}</b></span><span>Writes <b>${state.swapsOrMoves}</b></span><span>Time <b>${formatTime(elapsed())}</b></span><span>Items <b>${state.values.length}</b></span></div>` : ""}`;
+  card.innerHTML = `<header><strong class="algorithm-label">${runner.algorithm.label}</strong><span>${runner.completedAt !== undefined ? "Complete" : status === "paused" ? "Paused" : status === "running" ? "Sorting" : "Ready"}</span></header><div class="recording-bars" role="img" aria-label="${runner.algorithm.label} sorting ${state.values.length} values"></div>${showStats ? `<div class="runner-stats"><span><em class="recording-stat-label">Comparisons</em> <b class="recording-stat-value">${state.comparisons}</b></span><span><em class="recording-stat-label">Writes</em> <b class="recording-stat-value">${state.swapsOrMoves}</b></span><span><em class="recording-stat-label">Time</em> <b class="recording-stat-value">${formatTime(elapsed())}</b></span><span><em class="recording-stat-label">Items</em> <b class="recording-stat-value">${state.values.length}</b></span></div>` : ""}`;
   const bars = card.querySelector<HTMLElement>(".recording-bars")!; bars.style.gap = state.values.length > 100 ? "2px" : "4px";
   state.values.forEach((value, index) => { const bar = document.createElement("i"); bar.style.height = `${Math.max(3, value)}%`; if (state.sortedIndices.has(index)) bar.classList.add("sorted"); if (state.highlightedCompareIndices.has(index)) bar.classList.add("comparing"); if (state.highlightedSwapIndices.has(index)) bar.classList.add("swapping"); bars.append(bar); });
   return card;

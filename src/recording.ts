@@ -30,7 +30,7 @@ app.innerHTML = `
       <section class="recording-preview" aria-label="Portrait recording preview">
         <div class="recording-canvas recording-theme-dark" id="recording-canvas" data-theme="${recordingTheme}">
           <header class="recording-header">
-            <h1 id="recording-title">Sorting Algorithm Race</h1>
+            <h1 id="recording-title">Bubble Sort vs Merge Sort</h1>
             <p id="recording-subtitle">Same input. Same machine.</p>
           </header>
           <section class="recording-visualization" id="recording-visualization" aria-label="Sorting animation"></section>
@@ -124,6 +124,14 @@ const renderBars = (runner: Runner): HTMLElement => {
 const getWinner = (): Runner | undefined => runners.length === 2 ? [...runners].sort((a, b) => a.state.comparisons - b.state.comparisons)[0] : undefined;
 const render = (): void => {
   el.countOutput.value = el.count.value; el.speedOutput.value = el.speed.value; el.secondary.closest("label")!.hidden = !el.race.checked;
+  const primaryAlgorithm = selected(el.primary.value).label;
+  const secondaryAlgorithm = selected(el.secondary.value).label;
+  el.title.textContent = el.race.checked
+    ? `${primaryAlgorithm} vs ${secondaryAlgorithm}`
+    : `Watch ${primaryAlgorithm} Work`;
+  el.subtitle.textContent = el.race.checked
+    ? "Same input. Same machine."
+    : "Every comparison. Every write.";
   el.title.parentElement!.hidden = !el.showTitle.checked; el.visualization.replaceChildren(...runners.map(renderBars));
   el.status.textContent = status === "idle" ? "Ready to record" : status === "countdown" ? "Starting shortly" : status === "running" ? "Sorting in progress" : status === "paused" ? "Animation paused" : "Sorting complete";
   const winner = status === "completed" ? getWinner() : undefined;

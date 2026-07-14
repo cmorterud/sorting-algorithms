@@ -8,6 +8,9 @@ const MIN_VALUE = 5;
 const MAX_VALUE = 100;
 const DEFAULT_SIZE = 50;
 
+if (window.location.pathname.endsWith("/recording")) {
+  void import("./recording");
+} else {
 const app = document.querySelector<HTMLDivElement>("#app");
 
 if (!app) {
@@ -290,3 +293,4 @@ elements.volumeSlider.addEventListener("input", () => {
 });
 
 renderCurrentState();
+}

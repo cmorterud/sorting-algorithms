@@ -43,7 +43,7 @@ app.innerHTML = `
       </section>
       <aside class="recording-controls" aria-label="Recording controls">
         <div class="control-group"><label>Primary algorithm<select id="primary-algorithm">${algorithmOptions}</select></label>
-        <label>Second algorithm<select id="secondary-algorithm">${algorithmOptions}</select></label></div>
+        <label>Second algorithm<select id="secondary-algorithm">${algorithmOptions.replace('value="merge"', 'value="merge" selected')}</select></label></div>
         <div class="control-group control-grid"><label>Items <output id="item-count-output">50</output><input id="item-count" type="range" min="20" max="200" value="50" /></label>
         <label>Speed <output id="speed-output">55</output><input id="recording-speed" type="range" min="1" max="100" value="55" /></label></div>
         <div class="control-group control-grid"><label>Data shape<select id="data-shape"><option value="random">Random</option><option value="nearly-sorted">Nearly sorted</option><option value="reversed">Reversed</option><option value="few-unique">Few unique values</option><option value="sorted">Already sorted</option></select></label>

@@ -30,7 +30,7 @@ app.innerHTML = `
       <section class="recording-preview" aria-label="Portrait recording preview">
         <div class="recording-canvas recording-theme-dark" id="recording-canvas" data-theme="${recordingTheme}">
           <header class="recording-header">
-            <h1 id="recording-title">Bubble Sort vs Merge Sort</h1>
+            <h1 id="recording-title"><span>Merge Sort</span><span>vs</span><span>Bubble Sort</span></h1>
             <p id="recording-subtitle">Same input. Same machine.</p>
           </header>
           <section class="recording-visualization" id="recording-visualization" aria-label="Sorting animation"></section>
@@ -126,9 +126,17 @@ const render = (): void => {
   el.countOutput.value = el.count.value; el.speedOutput.value = el.speed.value; el.secondary.closest("label")!.hidden = !el.race.checked;
   const primaryAlgorithm = selected(el.primary.value).label;
   const secondaryAlgorithm = selected(el.secondary.value).label;
-  el.title.textContent = el.race.checked
-    ? `${primaryAlgorithm} vs ${secondaryAlgorithm}`
-    : `Watch ${primaryAlgorithm} Work`;
+  if (el.race.checked) {
+    el.title.replaceChildren(
+      ...[secondaryAlgorithm, "vs", primaryAlgorithm].map((line) => {
+        const span = document.createElement("span");
+        span.textContent = line;
+        return span;
+      }),
+    );
+  } else {
+    el.title.textContent = `Watch ${primaryAlgorithm} Work`;
+  }
   el.subtitle.textContent = el.race.checked
     ? "Same input. Same machine."
     : "Every comparison. Every write.";
